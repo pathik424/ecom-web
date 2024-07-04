@@ -17,6 +17,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// echo " <h1>hello</h1>";
+
 /*
  * @hooked wc_empty_cart_message - 10
  */

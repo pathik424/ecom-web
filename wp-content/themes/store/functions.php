@@ -203,4 +203,68 @@ function validate_gift_card_message() {
 
     wp_die(); // This is required to terminate immediately and return a proper response
 }
+add_action('wp_enqueue_scripts', 'custom_shipping_scripts');
+function custom_shipping_scripts() {
+    wp_enqueue_script('custom-shipping-js', get_template_directory_uri() . '/js/custom-shipping.js', array('jquery'), '1.0', true);
+    wp_localize_script('custom-shipping-js', 'custom_shipping', array('ajax_url' => admin_url('admin-ajax.php')));
+}
 
+add_action('wp_ajax_nopriv_update_shipping_methods', 'update_shipping_methods');
+add_action('wp_ajax_update_shipping_methods', 'update_shipping_methods');
+function update_shipping_methods() {
+    $cart_total = WC()->cart->get_cart_contents_total(); // Get cart total excluding taxes
+
+    if ($cart_total >= 1000) {
+        WC()->session->set('chosen_shipping_methods', array('free_shipping:free_shipping'));
+    } else {
+        WC()->session->set('chosen_shipping_methods', array('flat_rate:2'));
+    }
+
+    WC()->cart->calculate_totals();
+    WC()->cart->maybe_set_cart_cookies();
+
+    wp_send_json(array('success' => true));
+}
+
+add_filter('woocommerce_package_rates', 'hide_shipping_methods_based_on_cart_total', 100, 2);
+function hide_shipping_methods_based_on_cart_total($rates, $package) {
+    $cart_total = WC()->cart->get_cart_contents_total(); // Get cart total excluding taxes
+    if ($cart_total >= 1000) {
+        foreach ($rates as $rate_key => $rate) {
+            if ('flat_rate' === $rate->method_id) {
+                unset($rates[$rate_key]);
+            }
+        }
+    } else {
+        foreach ($rates as $rate_key => $rate) {
+            if ('free_shipping' === $rate->method_id) {
+                unset($rates[$rate_key]);
+            }
+        }
+    }
+    return $rates;
+}
+
+add_action('woocommerce_before_cart', 'auto_select_free_shipping_method');
+add_action('woocommerce_before_checkout_form', 'auto_select_free_shipping_method');
+
+function auto_select_free_shipping_method() {
+    if ( WC()->cart ) {
+        $cart_total = WC()->cart->get_cart_contents_total(); // Get cart total excluding taxes
+        $free_shipping_selected = false;
+
+        foreach ( WC()->shipping()->get_packages() as $package ) {
+            foreach ( $package['rates'] as $rate_id => $rate ) {
+                if ( $rate->method_id === 'free_shipping' && $cart_total >= 1000 ) {
+                    WC()->session->set( 'chosen_shipping_methods', array( $rate_id ) );
+                    $free_shipping_selected = true;
+                    break 2; // Stop looping once Free Shipping is selected
+                }
+            }
+        }
+
+        if ( $free_shipping_selected ) {
+            WC()->cart->calculate_totals();
+        }
+    }
+}

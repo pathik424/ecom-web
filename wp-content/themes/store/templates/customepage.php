@@ -162,9 +162,7 @@ get_header();
     ?>
 </section>
 
-<?php
-get_footer();
-?>
+
 
 <!-- Include Slick Slider CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
@@ -174,7 +172,7 @@ get_footer();
 /* Section Styles */
 section {
     padding: 40px 0;
-    background-color: #f9f9f9;
+    background-color: white;
 }
 
 /* Divider Styles */
@@ -550,3 +548,60 @@ jQuery(document).ready(function($) {
     loadProducts();
 });
 </script>
+
+
+<section id="featured-products">
+    <h1>Section 4</h1>
+    <h2>My Watch Products</h2>
+    <!-- Divider Line -->
+    <hr class="section-divider">
+    <?php
+    function display_cat_product() {
+        // Query WooCommerce for products in the "Watch" category
+        $args = array(
+            'post_type' => 'product',
+            'posts_per_page' => 6,
+            'tax_query' => array(
+                array(
+                    'taxonomy' => 'product_cat',
+                    'field' => 'name',
+                    'terms' => 'Watch', // Category name
+                ),
+            ),
+        );
+
+        $query = new WP_Query($args);
+
+        // Check if there are any products in the "Watch" category
+        if ($query->have_posts()) {
+            echo '<div class="featured-products-grid">';
+            while ($query->have_posts()) : $query->the_post();
+                global $product;
+
+                // Display product details
+                echo '<div class="featured-product">';
+                echo '<a href="' . get_permalink() . '">' . woocommerce_get_product_thumbnail() . '</a>';
+                echo '<h2><a href="' . get_permalink() . '">' . get_the_title() . '</a></h2>';
+                echo '<div class="price">' . $product->get_price_html() . '</div>';
+                echo '<p class="description">' . wp_trim_words(get_the_excerpt(), 20, '...') . '</p>';
+                echo '<a href="' . get_permalink() . '" class="button view-product">View Product</a>';
+                echo '<a href="' . do_shortcode('[add_to_cart_url id="' . $product->get_id() . '"]') . '" class="button add-to-cart">Add to Cart</a>';
+                // echo '<a href="' . $checkout_url . '" class="button buy-now">Buy Now</a>';
+                echo '</div>';
+            endwhile;
+            echo '</div>';
+
+            wp_reset_postdata();
+        } else {
+            echo '<p>No products found in the "Watch" category.</p>';
+        }
+    }
+
+    display_cat_product();
+    ?>
+</section>
+
+
+<?php
+get_footer();
+?>
