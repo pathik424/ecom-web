@@ -448,5 +448,29 @@ function my_custom_sidebar() {
 }
 add_action( 'widgets_init', 'my_custom_sidebar' );
 
+// create ACF For Post Type add in admin table and add product 
+
+function create_acf_custom_post_type() {
+    register_post_type('acf_product',
+        array(
+            'labels' => array(
+                'name' => __('Pathik'),
+                'singular_name' => __('Pathi')
+            ),
+            'public' => true,
+            'has_archive' => true,
+            'rewrite' => array('slug' => 'pathiks'),
+            'supports' => array('title', 'editor', 'thumbnail'),
+        )
+    );
+}
+add_action('init', 'create_acf_custom_post_type');
+
+function enqueue_swiper_assets() {
+    wp_enqueue_style('swiper-css', 'https://unpkg.com/swiper/swiper-bundle.min.css');
+    wp_enqueue_script('swiper-js', 'https://unpkg.com/swiper/swiper-bundle.min.js', array('jquery'), null, true);
+}
+add_action('wp_enqueue_scripts', 'enqueue_swiper_assets');
+
 
 
