@@ -4,6 +4,70 @@
 
 get_header();
 ?>
+
+<!-- Breadcrumbs -->
+<div class="breadcrumbs">
+    <?php echo do_shortcode('[custom_breadcrumb]'); ?>
+</div>
+
+
+
+<style>
+    .breadcrumb {
+    font-size: 14px;
+    margin: 20px 0;
+}
+
+.breadcrumb a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb &raquo; {
+    margin: 0 5px;
+}
+
+</style>
+
+
+
+</div><!-- .content-wrapper -->
+
+<!-- Sidebar -->
+<aside class="custom-sidebar">
+
+<!-- Custom Slider -->
+<div class="custom-slider">
+        <h2>Custom Slider</h2>
+        <!-- Add your custom slider content here -->
+        <div class="slider-wrapper">
+            <!-- Slider content -->
+        </div>
+    </div>
+
+    <?php if ( is_active_sidebar( 'custom-sidebar' ) ) : ?>
+        <?php dynamic_sidebar( 'custom-sidebar' ); ?>
+    <?php endif; ?>
+</aside>
+
+<style>
+   .custom-sidebar {
+       position: absolute;
+       right: 100px;
+       width: 250px; /* Set the width */
+       height: 500px; /* Set the height */
+       box-sizing: border-box;
+       border: 2px solid;
+
+   }
+</style>
+
+  
+
 <!-- Divider Line -->
 <hr class="section-divider">
 
@@ -602,6 +666,14 @@ jQuery(document).ready(function($) {
 </section>
 
 
+
+
 <?php
 get_footer();
 ?>
+
+
+
+
+
+

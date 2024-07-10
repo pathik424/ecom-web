@@ -14,3 +14,7 @@ if ( store_load_sidebar() ) : ?>
 	<?php dynamic_sidebar( 'sidebar-1' ); ?>
 </div><!-- #secondary -->
 <?php endif; ?>
+
+
+
+

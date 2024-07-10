@@ -14,7 +14,6 @@
  * @package     WooCommerce\Templates
  * @version     1.6.4
  */
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -34,11 +33,42 @@ get_header( 'shop' ); ?>
 		<?php while ( have_posts() ) : ?>
 			<?php the_post(); ?>
 
-			<?php wc_get_template_part( 'content', 'single-product' ); ?>
+			
+			<div class="woocommerce-product-details__acf-fields">
+				<?php
+		// Display ACF fields here
+		// global $product;
+		
+		$product_description = get_field('product_description');
+		$product_image = get_field('product_image');
+		
+		$product_price = get_field('product_price');
+		$product_title = get_field('product_title');
+		// var_dump($product_image);
+		
+		echo '<div class="custom-product">';
+		echo '<h2>' . $product_title . '</h2>';
+		if ($product_image) {
+			echo '<img src="' . $product_image['url'] . '" alt="' . $product_image['alt'] . '">';
+		} else {
+			// Handle case where no image is set
+			echo '<img src="' . get_template_directory_uri() . '/images/default-image.jpg" alt="Default Image">';
+		}
+		echo '<p>' . $product_description . '</p>';
+		echo '<p>Price: $' . $product_price . '</p>';
+		echo '</div>';
+		
+		?>
+	</div>
+	<?php wc_get_template_part( 'content', 'single-product' ); ?>
 
-		<?php endwhile; // end of the loop. ?>
+<?php endwhile; // end of the loop. ?>
+			
+
+
 
 	<?php
+
 		/**
 		 * woocommerce_after_main_content hook.
 		 *
@@ -46,16 +76,17 @@ get_header( 'shop' ); ?>
 		 */
 		do_action( 'woocommerce_after_main_content' );
 	?>
-
+	
 	<?php
-		/**
-		 * woocommerce_sidebar hook.
-		 *
-		 * @hooked woocommerce_get_sidebar - 10
-		 */
-		do_action( 'woocommerce_sidebar' );
-	?>
-
+     /**
+      * woocommerce_sidebar hook.
+      *
+      * We will conditionally display our custom sidebar here.
+      */
+   
+         do_action( 'woocommerce_sidebar' );
+     
+ ?>
 <?php
 get_footer( 'shop' );
 

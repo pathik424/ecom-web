@@ -9,10 +9,13 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 $(document.body).trigger('update_checkout');
                 setTimeout(function() {
-                    var freeShippingMethod = $('input[name="shipping_method[0]"][value="free_shipping:free_shipping"]');
-                    if (freeShippingMethod.length) {
-                        $('input[name="shipping_method[0]"]').prop('checked', false);
-                        freeShippingMethod.prop('checked', true).change();
+                    var shippingCountry = $('#shipping_country').val();
+                    if (shippingCountry === 'IN') {
+                        var freeShippingMethod = $('input[name="shipping_method[0]"][value="free_shipping:free_shipping"]');
+                        if (freeShippingMethod.length) {
+                            $('input[name="shipping_method[0]"]').prop('checked', false);
+                            freeShippingMethod.prop('checked', true).change();
+                        }
                     }
                 }, 100);
             }
